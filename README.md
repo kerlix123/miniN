@@ -1,0 +1,218 @@
+# miniN
+miniN is one line programing language which is transpiled to Kotlin by transpiler written in Kotlin.
+***
+## Syntax
+
+    line_name function function_parameters
+
+## Line naming
+In miniN every line of code can have it's own name if it will be later used in some of the functions like "EXE", "WHILE", "FOR"...
+
+Every line needs to have it's specific name!!!
+
+If you want code from line to be used in main section of the program line name should be "~". 
+
+We will explain line naming better for each function in the following chapters.
+
+## Comments
+Comment is every line which name is "?".
+    
+    ? this is comment
+
+## EXE
+"EXE" is the most important function in miniN programing language. This function is used for executing lines that are named.
+
+    A PRINT "Hello, World!"
+    ~ EXE A
+
+You can execute more lines by putting "&" between name of the lines.
+
+The lines need to be named before executing them. 
+
+    ~ EXE A
+    A PRINT "WRONG!!!"
+The example above will not work!!!
+
+And you can execute a "EXE" function =).
+    
+    A PRINT "Hello, World!"
+    B EXE A
+    ~ EXE B
+    
+## Output
+As you saw in the previous chapter we use "PRINT" to output text.
+
+    ~ PRINT "miniN"
+
+## Variables
+Variables in miniN are written like this:
+
+    ~ VAR a = 10
+
+If you want your variable to be unchagable instead of "VAR" you use "VAL":
+    
+    ~ VAL a = 10
+
+To output variable you use "$" before the name of the variable in "PRINT" function:
+
+    ~ VAR a = 10
+    ~ PRINT "a = $a"
+
+## Input
+To input value of variables in miniN we use function "IN":
+
+    ~ VAR a
+    ~ IN a
+
+The example above works only with string type.
+
+If you want to input another type of data you need to initialize variable with element that has type which you want to input:
+
+#### Inputing integer
+    ~ VAR a = 10
+    ~ IN a
+
+#### Inputing decimal numbers
+    ~ VAR a = 10.5
+    ~ IN a
+
+Variables in which you input something need to be of type "VAR"!!!
+
+## IF, ELIF & ELSE
+So, now we are going to see the funniest part of miniN programing language.
+
+In most other programing languages "IF, ELIF & ELSE" statements, "FOR" and "WHILE" loops are multi-line, but in miniN everything is written in one line and that is why we have possibility of line naming.
+Let's take a look on how to write "IF, ELIF & ELSE" statements".
+
+    ~ VAR a = 0
+    ~ IN a
+    A PRINT "a is smaller than 3."
+    B PRINT "a is 3."
+    C PRINT "a is bigger than 3."
+    D PRINT "a: $a
+    ~ IF [a<3] A&D
+    ~ ELIF [a==3] B
+    ~ ELSE C&D
+
+In the example above if the "a" is smaller than 3 the lines "A" and "D" will be executed.
+
+If we have more lines we want to execute we use "&" between them as you can see in "IF" and "ELSE" statements.
+
+## While loop
+Here is how to write a while loop in miniN:
+    
+    ~ VAR a = 0
+    A PRINT "$a"
+    B a += 1
+    ~ WHILE [a<5] A&B
+
+The example above outputs numbers from 0 to 4.
+
+## For loop
+For loop in miniN is written like this:
+
+    A PRINT "$i"
+    ~ FOR [i > 0..5] A
+
+In this example the program outputs numbers from 0 to 5.
+
+## Loop functions 
+Inside a loop you can use "BREAK" or "CONTINUE" functions to break or continue a loop.
+
+## Lists
+Lists in miniN are written like this:
+
+    ~ LIST list_name = [element_1, element_2, element_N]
+### Changing value of list elements
+    
+    ~ list_name[index] = new_value
+### Outputing list elements
+
+    ~ PRINT "${list_name[index]}"
+### Getting list size
+    
+    ~ VAR size = list_name.size
+Outputing list size:
+
+    ~ PRINT "${list_name.size}"
+
+## Functions
+Functions in miniN are the most confusing part of miniN.
+
+Functions in miniN are written like this:
+
+    ~ FUN fun_name[parameter_1: parameter_type, parameter_N: parameter_type] line_1&line_2
+
+Functions can`t have line names. 
+Lines that will be executed in function don't need to be named before function like in the "EXE" and other miniN functions. 
+Every function needs to have a return value!!!
+
+Here is the example for how to make a function that returns a sum of two integers:
+    
+    ~ FUN sum[a: Int, b: Int] A
+    A RETURN a+b
+    ~ PRINT "${sum(1, 2)}
+
+The code above outputs "3".
+
+Please note that the PRINT is not part of the function.
+
+If we want to store value of sum in variable we will do it like this:
+    
+    ~ VAR a = sum(1, 2)
+
+Another example:
+
+    ~ FUN value[a: Int] A&B
+    A PRINT "value of a is: $a"
+    B RETURN 0
+
+In this example the function is used to output value of variable "a".
+This function can't be called from "PRINT" or from variable because it will just show the return value of the function, but you can do it if you want to know return value of function.
+
+To actually run the function we use "EXEF" function:
+
+    ~ EXEF value[3]
+The example above will output:
+    
+    value of a is: 3
+
+### EXEF function
+
+    ~ EXEF fun_name[value_of_parameter_1, value_of_parameter_N]
+## Examples 
+
+### Hello, World!
+
+    ~ PRINT "Hello, World!"
+
+Or using "EXE":
+    
+    A PRINT "Hello, World!"
+    ~ EXE A
+
+### Check if the number is even or odd
+
+    ~ VAR num = 0
+    ~ IN num
+    
+    A PRINT "Input is even."
+    B PRINT "Input is odd."
+    
+    ~ IF [num%2==0] A
+    ~ ELSE B
+
+### Inputting and outputting strings
+
+    ~ VAR a
+    ~ IN a
+    ~ PRINT "a is $a."
+
+### Comparing inputted strings
+
+    ~ VAR a
+    ~ VAR b
+    ~ IN a
+    ~ IN b
+    A PRINT "a is same as b"
+    ~ IF [a==b] A
