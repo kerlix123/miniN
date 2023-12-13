@@ -198,11 +198,9 @@ fun exef(curr: List<String>, line: Int, fn: String) {
     }
 }
 fun main(args: Array<String>) {
-    println(args[0])
     miniN = File("${args[0]}miniN.minni")
     kotlin = File("${args[0]}trnsltd.kt")
     code = miniN.readLines()
-    println(code)
     kotlin.writeText("fun main() {\n")
     while (i < code.size) {
         val curr = code[i].split(" ").filter { it != "" }

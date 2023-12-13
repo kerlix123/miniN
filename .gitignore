@@ -29,6 +29,4 @@ bin/
 .DS_Store
 
 src/main/kotlin/err.log
-src/main/kotlin/trnsltd.jar
-src/main/kotlin/trnsltr.jar
 src/main/kotlin/trnsltr.jar
