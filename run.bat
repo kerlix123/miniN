@@ -4,7 +4,7 @@ type nul > err.log
 
 :: Calls translator
 CALL kotlinc trnsltr.kt -include-runtime -d trnsltr.jar
-java -jar .\trnsltr.jar
+java -jar .\trnsltr.jar location_of_project
 echo.
 
 :: Prints info
