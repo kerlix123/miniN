@@ -1,0 +1,5 @@
+# LBAF
+~ VAR a = 0
+A PRINT "$a"
+~ WHILE [a<5] A&B
+B a += 1
