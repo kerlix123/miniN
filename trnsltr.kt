@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.system.exitProcess
 
 lateinit var miniN: File
 lateinit var kotlin: File
@@ -28,6 +29,7 @@ fun exe(curr: List<String>, line: Int) {
     if (curr[1] == "PRINT") {
         print(curr, line, "exe")
     } else if (curr[1] == "EXE") {
+        println("...")
         exe(code[lineNames[curr[2]]!!].split(" ").filter { it != "" }, lineNames[curr[2]]!!)
     } else if (curr[1] == "IN") {
         input(curr, "exe")
@@ -64,7 +66,6 @@ fun print(curr: List<String>, line: Int, fn: String) {
 }
 fun variable(curr: List<String>, line: Int, type: String, fn: String) {
     if ((curr[0] == "~" || fn == "exe") && curr.size == 3 && type == "var") {
-        println("...")
         kotlin.appendText("\tlateinit var ${curr[2]}: Any\n")
     } else if ((curr[0] == "~" || fn == "exe") && curr[3] == "=") {
         if (curr[4][0] == '"') {
@@ -198,21 +199,43 @@ fun exef(curr: List<String>, line: Int, fn: String) {
     }
 }
 fun main(args: Array<String>) {
+    var type: String
     miniN = File("${args[0]}miniN.minni")
     kotlin = File("${args[0]}trnsltd.kt")
     code = miniN.readLines()
+
+    //LBF || LBAF
+    if (code.first().split(" ").filter { it != "" }.first() == "#") {
+        type = when (code.first().split(" ").filter { it != "" }[1]) {
+            "LBF" -> "LBF"
+            "LBAF" -> "LBAF"
+            else -> exitProcess(0)
+        }
+    } else {
+        exitProcess(0)
+    }
+
+    //LBAF
+    if (type == "LBAF")  {
+        for (k in code.indices) {
+            val curr = code[k].split(" ").filter { it != "" }
+            if (curr[0] != "~" && curr[0] != "?" && curr[0] != "#") {
+                lineNames[curr[0]] = k
+            }
+        }
+    }
+
     kotlin.writeText("fun main() {\n")
     while (i < code.size) {
         val curr = code[i].split(" ").filter { it != "" }
 
-        //line namer
-        if (curr.isEmpty() || curr[0] == "?") {
+        //line namer && LBF
+        if (curr.isEmpty() || curr[0] == "?" || curr[0] == "#") {
             i++
             continue
-        } else if (curr[0] != "~") {
+        } else if (curr[0] != "~" && type == "LBF") {
             lineNames[curr[0]] = i
         }
-
         if (curr[1] == "PRINT") {
             print(curr, i, "main")
         } else if (curr[1] == "EXE") {

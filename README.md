@@ -14,6 +14,23 @@ If you want code from line to be used in main section of the program line name s
 
 We will explain line naming better for each function in the following chapters.
 
+## LBF and LBAF
+First line of code in miniN specifies type of writing code.
+
+    # LBF
+LBF is normal type of writing code in miniN. LBF (Lines Before Functions) tells transpiler that you will define
+lines that are going to be executed in function before functions like EXE, WHILE, FOR...
+
+    # LBAF
+If you use LBAF (Lines Before and After Functions) you can defin line that will be executed in function before and after the function.
+
+### Which one should you use?
+If you need your program to run faster you should use LBF.
+
+If you need simpler writing of code you should use LBAF.
+
+Note that if you have a lot of lines LBAF will be much slower.
+
 ## Comments
 Comment is every line which name is "?".
     
