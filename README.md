@@ -15,21 +15,23 @@ If you want code from line to be used in main section of the program line name s
 We will explain line naming better for each function in the following chapters.
 
 ## LBF and LBAF
-First line of code in miniN specifies type of writing code.
+First line of code in miniN specifies style of writing code.
+
+Every program in miniN needs to start with defining the style of code writing
 
     # LBF
-LBF is normal type of writing code in miniN. LBF (Lines Before Functions) tells transpiler that you will define
+LBF is normal style of writing code in miniN. LBF (Lines Before Functions) tells transpiler that you will define
 lines that are going to be executed in function before functions like EXE, WHILE, FOR...
 
     # LBAF
-If you use LBAF (Lines Before and After Functions) you can defin line that will be executed in function before and after the function.
+If you use LBAF (Lines Before and After Functions) you can define the line that will be executed in function before and after the function.
 
 ### Which one should you use?
 If you need your program to run faster you should use LBF.
 
 If you need simpler writing of code you should use LBAF.
 
-Note that if you have a lot of lines LBAF will be much slower.
+**Note that if you have a lot of lines LBAF will be much slower!**
 
 ## Comments
 Comment is every line which name is "?".
@@ -44,13 +46,7 @@ Comment is every line which name is "?".
 
 You can execute more lines by putting "&" between name of the lines.
 
-The lines need to be named before executing them. 
-
-    ~ EXE A
-    A PRINT "WRONG!!!"
-The example above will not work!!!
-
-And you can execute a "EXE" function =).
+*And you can execute a "EXE" function =).
     
     A PRINT "Hello, World!"
     B EXE A
@@ -160,8 +156,7 @@ Functions in miniN are written like this:
 
     ~ FUN fun_name[parameter_1: parameter_type, parameter_N: parameter_type] line_1&line_2
 
-Functions can`t have line names. 
-Lines that will be executed in function don't need to be named before function like in the "EXE" and other miniN functions. 
+Functions can`t have line names.
 Every function needs to have a return value!!!
 
 Here is the example for how to make a function that returns a sum of two integers:
@@ -200,16 +195,19 @@ The example above will output:
 ## Examples 
 
 ### Hello, World!
-
+    
+    # LBF
     ~ PRINT "Hello, World!"
 
 Or using "EXE":
     
+    # LBF
     A PRINT "Hello, World!"
     ~ EXE A
 
 ### Check if the number is even or odd
 
+    # LBF
     ~ VAR num = 0
     ~ IN num
     
@@ -221,12 +219,14 @@ Or using "EXE":
 
 ### Inputting and outputting strings
 
+    # LBF
     ~ VAR a
     ~ IN a
     ~ PRINT "a is $a."
 
 ### Comparing inputted strings
 
+    # LBF
     ~ VAR a
     ~ VAR b
     ~ IN a
