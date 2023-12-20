@@ -233,3 +233,19 @@ Or using "EXE":
     ~ IN b
     A PRINT "a is same as b"
     ~ IF [a==b] A
+
+### Selection sort in LBAF
+    
+    # LBAF
+    ~ LIST a = [4, 2, 3, 1]
+    ~ VAR pom = 0
+    ~ FOR [i > 0..<4] A1
+    A1 FOR [j > i+1..<4] B1&B2&B3
+    B1 VAR b = a[i]
+    B2 VAR c = a[j]
+    B3 IF [b > c] C1&C2&C3
+    C1 pom = a[i]
+    C2 a[i] = a[j]
+    C3 a[j] = pom
+    
+    ~ PRINT "$a"

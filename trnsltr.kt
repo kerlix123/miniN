@@ -219,7 +219,7 @@ fun main(args: Array<String>) {
     if (type == "LBAF")  {
         for (k in code.indices) {
             val curr = code[k].split(" ").filter { it != "" }
-            if (curr[0] != "~" && curr[0] != "?" && curr[0] != "#") {
+            if (curr.isNotEmpty() && (curr[0] != "~" && curr[0] != "?" && curr[0] != "#")) {
                 lineNames[curr[0]] = k
             }
         }
