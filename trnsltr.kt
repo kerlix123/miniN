@@ -29,7 +29,6 @@ fun exe(curr: List<String>, line: Int) {
     if (curr[1] == "PRINT") {
         print(curr, line, "exe")
     } else if (curr[1] == "EXE") {
-        println("...")
         exe(code[lineNames[curr[2]]!!].split(" ").filter { it != "" }, lineNames[curr[2]]!!)
     } else if (curr[1] == "IN") {
         input(curr, "exe")

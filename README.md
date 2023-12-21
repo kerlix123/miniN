@@ -52,6 +52,7 @@ You can execute more lines by putting "&" between name of the lines.
     B EXE A
     ~ EXE B
     
+**But then the A line will be executed twice!**
 ## Output
 As you saw in the previous chapter we use "PRINT" to output text.
 
