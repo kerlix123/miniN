@@ -6,24 +6,7 @@ lateinit var kotlin: File
 lateinit var code: List<String>
 val lineNames = mutableMapOf<String, Int>()
 var i = 0
-var variables = mutableMapOf<String, String>()
 var funs = mutableListOf<String>()
-
-fun getType(obj: Any): String {
-    return when (obj) {
-        is String -> {
-            if (obj.toIntOrNull() != null) {
-                "Int"
-            }
-            else if (obj.toDoubleOrNull() != null) {
-                "Double"
-            } else {
-                "String"
-            }
-        }
-        else -> obj::class.simpleName ?: "Unknown type"
-    }
-}
 
 fun exe(curr: List<String>, line: Int) {
     if (curr[1] == "PRINT") {
@@ -69,14 +52,12 @@ fun variable(curr: List<String>, line: Int, type: String, fn: String) {
     } else if ((curr[0] == "~" || fn == "exe") && curr[3] == "=") {
         if (curr[4][0] == '"') {
             kotlin.appendText("\t$type ${curr[2]} = \"${code[line].split("\"")[1]}\"\n")
-            variables[curr[2]] = getType(code[line].split("\"")[1])
         } else {
             var b = ""
             for (k in 4 until curr.size) {
                 b += curr[k]
             }
             kotlin.appendText("\t$type ${curr[2]} = ${b}\n")
-            variables[curr[2]] = getType(b)
         }
     }
 }
@@ -95,7 +76,7 @@ fun varchange(curr: List<String>, line: Int, fn: String) {
 }
 fun ifstt(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
-        kotlin.appendText("\tif (${code[line].split("[")[1].split("]").first()}) {\n")
+        kotlin.appendText("\tif (${code[line].subSequence(code[line].indexOf('[')+1, code[line].length-3)}) {\n")
         val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
@@ -105,7 +86,7 @@ fun ifstt(curr: List<String>, line: Int, fn: String) {
 }
 fun elifstt(curr: List<String>, line: Int) {
     if (curr[0] == "~" && (code[line-1].split(" ").filter { it != "" }[1] == "ELIF" || code[line-1].split(" ").filter { it != "" }[1] == "IF")) {
-        kotlin.appendText("\telse if (${code[line].split("[")[1].split("]").first()}) {\n")
+        kotlin.appendText("\telse if (${code[line].subSequence(code[line].indexOf('[')+1, code[line].length-3)}) {\n")
         val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
@@ -125,11 +106,13 @@ fun elsestt(curr: List<String>, line: Int) {
 }
 fun input(curr: List<String>, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
-        kotlin.appendText("\t${curr[2]} = readln()")
-        when (variables[curr[2]]) {
-            "Int" -> kotlin.appendText(".toInt()\n")
-            "String" -> kotlin.appendText("\n")
-            "Double" -> kotlin.appendText(".toDouble()\n")
+        kotlin.appendText("\t${curr[3]} = readln()")
+        when (curr[2]) {
+            "INT" -> kotlin.appendText(".toInt()\n")
+            "STRING" -> kotlin.appendText("\n")
+            "DOUBLE" -> kotlin.appendText(".toDouble()\n")
+            "CHAR" -> kotlin.appendText(".toChar()\n")
+            "BOOL" -> kotlin.appendText(".toBoolean()\n")
             else -> kotlin.appendText("\n")
         }
     }

@@ -52,7 +52,7 @@ You can execute more lines by putting "&" between name of the lines.
     B EXE A
     ~ EXE B
     
-**But then the A line will be executed twice!**
+**But then the A line will be executed as many times as there are EXE functions calling eachother!** (In this example A line will be executed twice)
 ## Output
 As you saw in the previous chapter we use "PRINT" to output text.
 
@@ -76,19 +76,16 @@ To output variable you use "$" before the name of the variable in "PRINT" functi
 To input value of variables in miniN we use function "IN":
 
     ~ VAR a
-    ~ IN a
+    ~ IN type a
 
-The example above works only with string type.
-
-If you want to input another type of data you need to initialize variable with element that has type which you want to input:
 
 #### Inputing integer
-    ~ VAR a = 10
-    ~ IN a
+    ~ VAR a
+    ~ IN INT a
 
 #### Inputing decimal numbers
-    ~ VAR a = 10.5
-    ~ IN a
+    ~ VAR a
+    ~ IN DOUBLE a
 
 Variables in which you input something need to be of type "VAR"!!!
 
