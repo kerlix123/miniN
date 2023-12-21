@@ -1,13 +1,6 @@
+import java.io.File
 fun main() {
-	var a = mutableListOf(1, 2, 3)
-	if (a[0] > a[1]) {
-	println("yes")
-	}
-	else if (a[1] < a[2]) {
-	println("lele")
-	}
-	else {
-	println("yes")
-	println("lele")
-	}
+	var a = File("/Volumes/Seagate/tst/test.txt")
+	var b = a.readLines()
+	println(b)
 }

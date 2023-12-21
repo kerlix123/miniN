@@ -43,18 +43,24 @@ fun exe(curr: List<String>, line: Int) {
 }
 fun print(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
-        kotlin.appendText("\tprintln(\"" + code[line].split('"').filter { it != "" }.last() + "\")\n")
+        if (curr[2].first() == '"') {
+            kotlin.appendText("\tprintln(\"" + code[line].split('"').last { it != "" } + "\")\n")
+        } else {
+            kotlin.appendText("\tprintln(${curr[2]})\n")
+        }
     }
 }
 fun variable(curr: List<String>, line: Int, type: String, fn: String) {
     if ((curr[0] == "~" || fn == "exe") && curr.size == 3 && type == "var") {
         kotlin.appendText("\tlateinit var ${curr[2]}: Any\n")
     } else if ((curr[0] == "~" || fn == "exe") && curr[3] == "=") {
-        if (curr[4][0] == '"') {
+        if (curr[4].first() == '"' && curr.last().last() == '"') {
             kotlin.appendText("\t$type ${curr[2]} = \"${code[line].split("\"")[1]}\"\n")
+        } else if (curr[4].first() == '[' && curr.last().last() == ']') {
+            kotlin.appendText("\t$type ${curr[2]} = mutableListOf(${code[line].split("[").last().filter { it != ']' }})\n")
         } else {
             var b = ""
-            for (k in 4 until curr.size) {
+            for (k in 4..<curr.size) {
                 b += curr[k]
             }
             kotlin.appendText("\t$type ${curr[2]} = ${b}\n")
@@ -63,11 +69,13 @@ fun variable(curr: List<String>, line: Int, type: String, fn: String) {
 }
 fun varchange(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
-        if (curr[3][0] == '"') {
+        if (curr[3][0] == '"' && curr.last().last() == '"') {
             kotlin.appendText("\t${curr[1]} ${curr[2]} \"${code[line].split("\"")[1]}\"\n")
+        } else if (curr[3][0] == '[' && curr.last().last() == ']') {
+            kotlin.appendText("\t${curr[2]} ${curr[2]} mutableListOf(${code[line].split("[").last().filter { it != ']' }})\n")
         } else {
             var b = ""
-            for (k in 3 until curr.size) {
+            for (k in 3..<curr.size) {
                 b += curr[k]
             }
             kotlin.appendText("\t${curr[1]} ${curr[2]} ${b}\n")
@@ -119,7 +127,7 @@ fun input(curr: List<String>, fn: String) {
 }
 fun wloop(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
-        kotlin.appendText("\twhile (${code[line].split("[")[1].split("]").first()}) {\n")
+        kotlin.appendText("\twhile (${code[line].subSequence(code[line].indexOf('[')+1, code[line].length-3)}) {\n")
         val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
@@ -180,14 +188,23 @@ fun exef(curr: List<String>, line: Int, fn: String) {
         kotlin.appendText("(${code[line].split("[").last().split("]").first()})\n")
     }
 }
+fun file (curr: List<String>, line: Int, fn: String) {
+    if (curr[0] == "~" || fn == "exe") {
+        if (curr[4].first() == '"' && curr[4].last() == '"') {
+            kotlin.appendText("\tvar ${curr[2]} = File(${curr[4]})\n")
+        }
+    }
+}
 fun main(args: Array<String>) {
-    var type: String
+    val type: String
     miniN = File("${args[0]}miniN.minni")
     kotlin = File("${args[0]}trnsltd.kt")
     code = miniN.readLines()
 
+    kotlin.writeText("")
+
     //LBF || LBAF
-    if (code.first().split(" ").filter { it != "" }.first() == "#") {
+    if (code.first().split(" ").first { it != "" } == "#") {
         type = when (code.first().split(" ").filter { it != "" }[1]) {
             "LBF" -> "LBF"
             "LBAF" -> "LBAF"
@@ -207,7 +224,11 @@ fun main(args: Array<String>) {
         }
     }
 
-    kotlin.writeText("fun main() {\n")
+    if (code.contains("> FILE")) {
+        kotlin.appendText("import java.io.File\n")
+    }
+
+    kotlin.appendText("fun main() {\n")
     while (i < code.size) {
         val curr = code[i].split(" ").filter { it != "" }
 
@@ -250,6 +271,8 @@ fun main(args: Array<String>) {
             rtrn(curr, "main")
         } else if (curr[1] == "EXEF") {
             exef(curr, i, "main")
+        } else if (curr[1] == "FILE") {
+            file(curr, i, "main")
         }
 
         else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {

@@ -72,6 +72,11 @@ To output variable you use "$" before the name of the variable in "PRINT" functi
     ~ VAR a = 10
     ~ PRINT "a = $a"
 
+Or if you want to output only one variable without text before or after it you can do it like this:
+
+    ~ VAR a = 10
+    ~ PRINT a
+
 ## Input
 To input value of variables in miniN we use function "IN":
 
@@ -133,7 +138,7 @@ Inside a loop you can use "BREAK" or "CONTINUE" functions to break or continue a
 ## Lists
 Lists in miniN are written like this:
 
-    ~ LIST list_name = [element_1, element_2, element_N]
+    ~ VAR list_name = [element_1, element_2, element_N]
 ### Changing value of list elements
     
     ~ list_name[index] = new_value

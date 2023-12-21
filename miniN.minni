@@ -1,7 +1,5 @@
 # LBAF
-~ LIST a = [1, 2, 3]
-~ IF [a[0] > a[1]] A
-~ ELIF [a[1] < a[2]] B
-~ ELSE A&B
-A PRINT "yes"
-B PRINT "lele"
+> FILE
+~ FILE a = "/Volumes/Seagate/tst/test.txt"
+~ VAR b = a.readLines()
+~ PRINT b
