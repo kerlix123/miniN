@@ -84,7 +84,7 @@ fun varchange(curr: List<String>, line: Int, fn: String) {
 }
 fun ifstt(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
-        kotlin.appendText("\tif (${code[line].subSequence(code[line].indexOf('[')+1, code[line].length-3)}) {\n")
+        kotlin.appendText("\tif (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
         val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
@@ -94,7 +94,7 @@ fun ifstt(curr: List<String>, line: Int, fn: String) {
 }
 fun elifstt(curr: List<String>, line: Int) {
     if (curr[0] == "~" && (code[line-1].split(" ").filter { it != "" }[1] == "ELIF" || code[line-1].split(" ").filter { it != "" }[1] == "IF")) {
-        kotlin.appendText("\telse if (${code[line].subSequence(code[line].indexOf('[')+1, code[line].length-3)}) {\n")
+        kotlin.appendText("\telse if (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
         val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
@@ -127,7 +127,7 @@ fun input(curr: List<String>, fn: String) {
 }
 fun wloop(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
-        kotlin.appendText("\twhile (${code[line].subSequence(code[line].indexOf('[')+1, code[line].length-3)}) {\n")
+        kotlin.appendText("\twhile (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
         val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
