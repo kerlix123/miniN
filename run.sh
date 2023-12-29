@@ -5,8 +5,8 @@ true > trnsltd.kt
 true > err.log
 
 # Calls translator
-kotlinc trnsltr.kt -include-runtime -d trnsltr.jar
-java -jar trnsltr.jar location_of_project
+kotlinc trnsltr.kt > err.log 2>&1 -include-runtime -d trnsltr.jar
+java -jar trnsltr.jar /Users/antoniomatijevic/Documents/Kotlin/plm/src/
 echo
 
 # Prints info

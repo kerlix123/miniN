@@ -25,8 +25,6 @@ fun exe(curr: List<String>, line: Int) {
         cont(curr, "exe")
     } else if (curr[1] == "FOR") {
         floop(curr, line, "exe")
-    } else if (curr[1] == "LIST") {
-        list(curr, line, "exe")
     } else if (curr[1] == "RETURN") {
         rtrn(curr, "exe")
     } else if (curr[1] == "EXEF") {
@@ -159,11 +157,6 @@ fun floop(curr: List<String>, line: Int, fn: String) {
         }
     }
 }
-fun list(curr: List<String>, line: Int, fn: String) {
-    if (curr[0] == "~" || fn == "exe") {
-        kotlin.appendText("\tvar ${curr[2]} = mutableListOf(${code[line].split("[").last().filter { it != ']' }})\n")
-    }
-}
 fun func() {
     if (funs.isNotEmpty()) {
         for (func in funs) {
@@ -263,8 +256,6 @@ fun main(args: Array<String>) {
             cont(curr, "main")
         } else if (curr[1] == "FOR") {
             floop(curr, i, "main")
-        } else if (curr[1] == "LIST") {
-            list(curr, i, "main")
         } else if (curr[1] == "FUN") {
             funs += code[i]
         } else if (curr[1] == "RETURN") {
