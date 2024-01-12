@@ -6,7 +6,7 @@ true > err.log
 
 # Calls translator
 kotlinc trnsltr.kt > err.log 2>&1 -include-runtime -d trnsltr.jar
-java -jar trnsltr.jar /Users/antoniomatijevic/Documents/Kotlin/plm/src/
+java -jar trnsltr.jar /Users/antoniomatijevic/Documents/Kotlin/miniN/src/main/kotlin/
 echo
 
 # Prints info

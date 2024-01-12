@@ -4,6 +4,7 @@ miniN is one line programing language which is transpiled to Kotlin by transpile
 ## Syntax
 
     line_name function function_parameters
+Function names can be uppercase or lowercase.
 
 ## Line naming
 In miniN every line of code can have it's own name if it will be later used in some of the functions like "EXE", "WHILE", "FOR"...

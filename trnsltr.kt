@@ -7,31 +7,32 @@ lateinit var code: List<String>
 val lineNames = mutableMapOf<String, Int>()
 var i = 0
 var funs = mutableListOf<String>()
+var sttstack = mutableListOf<String>()
 
 fun exe(curr: List<String>, line: Int) {
-    if (curr[1] == "PRINT") {
+    if (curr[1] == "PRINT" || curr[1] == "print") {
         print(curr, line, "exe")
-    } else if (curr[1] == "EXE") {
+    } else if (curr[1] == "EXE" || curr[1] == "exe") {
         exe(code[lineNames[curr[2]]!!].split(" ").filter { it != "" }, lineNames[curr[2]]!!)
-    } else if (curr[1] == "IN") {
+    } else if (curr[1] == "IN" || curr[1] == "in") {
         input(curr, "exe")
-    } else if (curr[1] == "WHILE") {
+    } else if (curr[1] == "WHILE" || curr[1] == "while") {
         wloop(curr, line, "exe")
-    } else if (curr[1] == "BREAK") {
+    } else if (curr[1] == "BREAK" || curr[1] == "break") {
         brek(curr, "exe")
-    } else if (curr[1] == "IF") {
+    } else if (curr[1] == "IF" || curr[1] == "if") {
         ifstt(curr, line, "exe")
-    } else if (curr[1] == "CONTINUE") {
+    } else if (curr[1] == "CONTINUE" || curr[1] == "continue") {
         cont(curr, "exe")
-    } else if (curr[1] == "FOR") {
+    } else if (curr[1] == "FOR" || curr[1] == "for") {
         floop(curr, line, "exe")
-    } else if (curr[1] == "RETURN") {
+    } else if (curr[1] == "RETURN" || curr[1] == "return") {
         rtrn(curr, "exe")
-    } else if (curr[1] == "EXEF") {
+    } else if (curr[1] == "EXEF" || curr[1] == "exef") {
         exef(curr, line, "exe")
-    } else if (curr[1] == "VAR") {
+    } else if (curr[1] == "VAR" || curr[1] == "var") {
         variable(curr, line, "var", "exe")
-    } else if (curr[1] == "VAL") {
+    } else if (curr[1] == "VAL" || curr[1] == "val") {
         variable(curr, line, "val", "exe")
     }
 
@@ -88,26 +89,29 @@ fun ifstt(curr: List<String>, line: Int, fn: String) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
         kotlin.appendText("\t}\n")
+        sttstack += "if"
     }
 }
 fun elifstt(curr: List<String>, line: Int) {
-    if (curr[0] == "~" && (code[line-1].split(" ").filter { it != "" }[1] == "ELIF" || code[line-1].split(" ").filter { it != "" }[1] == "IF")) {
+    if (curr[0] == "~" && sttstack.last() == "elif" || sttstack.last() == "if") {
         kotlin.appendText("\telse if (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
         val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
         kotlin.appendText("\t}\n")
+        sttstack += "elif"
     }
 }
 fun elsestt(curr: List<String>, line: Int) {
-    if (curr[0] == "~" && (code[line-1].split(" ").filter { it != "" }[1] == "ELIF" || code[line-1].split(" ").filter { it != "" }[1] == "IF")) {
+    if (curr[0] == "~" && sttstack.last() == "elif" || sttstack.last() == "if") {
         kotlin.appendText("\telse {\n")
         val lines = code[line].split("ELSE").last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
         kotlin.appendText("\t}\n")
+        sttstack += "else"
     }
 }
 fun input(curr: List<String>, fn: String) {
@@ -217,7 +221,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    if (code.contains("> FILE")) {
+    if (code.contains("> FILE") || code.contains("> file")) {
         kotlin.appendText("import java.io.File\n")
     }
 
@@ -232,37 +236,37 @@ fun main(args: Array<String>) {
         } else if (curr[0] != "~" && type == "LBF") {
             lineNames[curr[0]] = i
         }
-        if (curr[1] == "PRINT") {
+        if (curr[1] == "PRINT" || curr[1] == "print") {
             print(curr, i, "main")
-        } else if (curr[1] == "EXE") {
+        } else if (curr[1] == "EXE" || curr[1] == "exe") {
             exe(code[lineNames[curr[2]]!!].split(" ").filter { it != "" }, lineNames[curr[2]]!!)
-        } else if (curr[1] == "VAR") {
+        } else if (curr[1] == "VAR" || curr[1] == "var") {
             variable(curr, i, "var", "main")
-        } else if (curr[1] == "VAL") {
+        } else if (curr[1] == "VAL" || curr[1] == "val") {
             variable(curr, i, "val", "main")
-        } else if (curr[1] == "IF") {
+        } else if (curr[1] == "IF" || curr[1] == "if") {
             ifstt(curr, i, "main")
-        } else if (curr[1] == "ELIF") {
+        } else if (curr[1] == "ELIF" || curr[1] == "elif") {
             elifstt(curr, i)
-        } else if (curr[1] == "ELSE") {
+        } else if (curr[1] == "ELSE" || curr[1] == "else") {
             elsestt(curr, i)
-        } else if (curr[1] == "IN") {
+        } else if (curr[1] == "IN" || curr[1] == "in") {
             input(curr, "main")
-        } else if (curr[1] == "WHILE") {
+        } else if (curr[1] == "WHILE" || curr[1] == "while") {
             wloop(curr, i, "main")
-        } else if (curr[1] == "BREAK") {
+        } else if (curr[1] == "BREAK" || curr[1] == "break") {
             brek(curr, "main")
-        } else if (curr[1] == "CONTINUE") {
+        } else if (curr[1] == "CONTINUE" || curr[1] == "continue") {
             cont(curr, "main")
-        } else if (curr[1] == "FOR") {
+        } else if (curr[1] == "FOR" || curr[1] == "for") {
             floop(curr, i, "main")
-        } else if (curr[1] == "FUN") {
+        } else if (curr[1] == "FUN" || curr[1] == "fun") {
             funs += code[i]
-        } else if (curr[1] == "RETURN") {
+        } else if (curr[1] == "RETURN" || curr[1] == "return") {
             rtrn(curr, "main")
-        } else if (curr[1] == "EXEF") {
+        } else if (curr[1] == "EXEF" || curr[1] == "exef") {
             exef(curr, i, "main")
-        } else if (curr[1] == "FILE") {
+        } else if (curr[1] == "FILE" || curr[1] == "file") {
             file(curr, i, "main")
         }
 
