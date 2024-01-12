@@ -213,7 +213,7 @@ Or using "EXE":
 
     # LBF
     ~ VAR num = 0
-    ~ IN num
+    ~ IN INT num
     
     A PRINT "Input is even."
     B PRINT "Input is odd."
@@ -225,7 +225,7 @@ Or using "EXE":
 
     # LBF
     ~ VAR a
-    ~ IN a
+    ~ IN STRING a
     ~ PRINT "a is $a."
 
 ### Comparing inputted strings
@@ -233,8 +233,8 @@ Or using "EXE":
     # LBF
     ~ VAR a
     ~ VAR b
-    ~ IN a
-    ~ IN b
+    ~ IN STRING a
+    ~ IN STRING b
     A PRINT "a is same as b"
     ~ IF [a==b] A
 

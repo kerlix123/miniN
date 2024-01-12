@@ -106,7 +106,7 @@ fun elifstt(curr: List<String>, line: Int) {
 fun elsestt(curr: List<String>, line: Int) {
     if (curr[0] == "~" && sttstack.last() == "elif" || sttstack.last() == "if") {
         kotlin.appendText("\telse {\n")
-        val lines = code[line].split("ELSE").last().filter { it != ' ' }.split('&')
+        val lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
@@ -118,11 +118,11 @@ fun input(curr: List<String>, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
         kotlin.appendText("\t${curr[3]} = readln()")
         when (curr[2]) {
-            "INT" -> kotlin.appendText(".toInt()\n")
-            "STRING" -> kotlin.appendText("\n")
-            "DOUBLE" -> kotlin.appendText(".toDouble()\n")
-            "CHAR" -> kotlin.appendText(".toChar()\n")
-            "BOOL" -> kotlin.appendText(".toBoolean()\n")
+            "INT", "int" -> kotlin.appendText(".toInt()\n")
+            "STRING", "string" -> kotlin.appendText("\n")
+            "DOUBLE", "double" -> kotlin.appendText(".toDouble()\n")
+            "CHAR", "char" -> kotlin.appendText(".toChar()\n")
+            "BOOL", "bool" -> kotlin.appendText(".toBoolean()\n")
             else -> kotlin.appendText("\n")
         }
     }
