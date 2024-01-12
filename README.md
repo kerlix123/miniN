@@ -241,7 +241,7 @@ Or using "EXE":
 ### Selection sort in LBAF mode
     
     # LBAF
-    ~ LIST a = [4, 2, 3, 1]
+    ~ VAR a = [4, 2, 3, 1]
     ~ VAR pom = 0
     ~ FOR [i > 0..<4] A1
     A1 FOR [j > i+1..<4] B1
