@@ -1,3 +1,0 @@
-trnsltd.kt:2:12: warning: variable 'num' initializer is redundant
-	var num = 0
-           ^

@@ -6,14 +6,30 @@ lateinit var kotlin: File
 lateinit var code: List<String>
 val lineNames = mutableMapOf<String, Int>()
 var i = 0
-var funs = mutableListOf<String>()
+var funs = mutableMapOf<Int, String>()
 var sttstack = mutableListOf<String>()
+
+fun tillTilda(line: Int): List<String> {
+    var index = line+1
+    var lines = mutableListOf<String>()
+    while (index < code.size && code[index].first() != '~') {
+        lines += code[index].split(" ").first()
+        index++
+    }
+    return lines
+}
 
 fun exe(curr: List<String>, line: Int) {
     if (curr[1] == "PRINT" || curr[1] == "print") {
         print(curr, line, "exe")
     } else if (curr[1] == "EXE" || curr[1] == "exe") {
-        exe(code[lineNames[curr[2]]!!].split(" ").filter { it != "" }, lineNames[curr[2]]!!)
+        var lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
+        if (lines.first() == "...~") {
+            lines = tillTilda(line)
+        }
+        for (line2 in lines) {
+            exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+        }
     } else if (curr[1] == "IN" || curr[1] == "in") {
         input(curr, "exe")
     } else if (curr[1] == "WHILE" || curr[1] == "while") {
@@ -84,7 +100,10 @@ fun varchange(curr: List<String>, line: Int, fn: String) {
 fun ifstt(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
         kotlin.appendText("\tif (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
-        val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+        var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+        if (lines.first() == "...~") {
+            lines = tillTilda(line)
+        }
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
@@ -95,7 +114,10 @@ fun ifstt(curr: List<String>, line: Int, fn: String) {
 fun elifstt(curr: List<String>, line: Int) {
     if (curr[0] == "~" && sttstack.last() == "elif" || sttstack.last() == "if") {
         kotlin.appendText("\telse if (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
-        val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+        var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+        if (lines.first() == "...~") {
+            lines = tillTilda(line)
+        }
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
@@ -106,7 +128,10 @@ fun elifstt(curr: List<String>, line: Int) {
 fun elsestt(curr: List<String>, line: Int) {
     if (curr[0] == "~" && sttstack.last() == "elif" || sttstack.last() == "if") {
         kotlin.appendText("\telse {\n")
-        val lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
+        var lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
+        if (lines.first() == "...~") {
+            lines = tillTilda(line)
+        }
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
@@ -130,7 +155,10 @@ fun input(curr: List<String>, fn: String) {
 fun wloop(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
         kotlin.appendText("\twhile (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
-        val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+        var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+        if (lines.first() == "...~") {
+            lines = tillTilda(line)
+        }
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
         }
@@ -153,7 +181,10 @@ fun floop(curr: List<String>, line: Int, fn: String) {
             val a = code[line].split("[")[1].split(">")[1].split("]")[0].filter { it != ' ' }
             val b = code[line].split("[")[1].split(">")[0].filter { it != ' ' }
             kotlin.appendText("\tfor ($b in $a) {\n")
-            val lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+            var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
+            if (lines.first() == "...~") {
+                lines = tillTilda(line)
+            }
             for (line2 in lines) {
                 exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
             }
@@ -163,10 +194,13 @@ fun floop(curr: List<String>, line: Int, fn: String) {
 }
 fun func() {
     if (funs.isNotEmpty()) {
-        for (func in funs) {
-            kotlin.appendText("fun ${func.split(" ").filter { it != "" }[2].split("[").first()}")
-            kotlin.appendText("(${func.split("[").last().split("]").first()}): Any {\n")
-            val lines = func.split("[").last().split("]").last().filter { it != ' ' }.split("&")
+        for ((key, value) in funs) {
+            kotlin.appendText("fun ${funs[key]?.split(" ")?.filter { it != "" }?.get(2)?.split("[")?.first()}")
+            kotlin.appendText("(${funs[key]?.split("[")?.last()?.split("]")?.first()}): Any {\n")
+            var lines = code[key].split("]").last().filter { it != ' ' }.split('&')
+            if (lines.first() == "...~") {
+                lines = tillTilda(key)
+            }
             for (line2 in lines) {
                 exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
             }
@@ -239,7 +273,14 @@ fun main(args: Array<String>) {
         if (curr[1] == "PRINT" || curr[1] == "print") {
             print(curr, i, "main")
         } else if (curr[1] == "EXE" || curr[1] == "exe") {
-            exe(code[lineNames[curr[2]]!!].split(" ").filter { it != "" }, lineNames[curr[2]]!!)
+            var line = i
+            var lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
+            if (lines.first() == "...~") {
+                lines = tillTilda(line)
+            }
+            for (line2 in lines) {
+                exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+            }
         } else if (curr[1] == "VAR" || curr[1] == "var") {
             variable(curr, i, "var", "main")
         } else if (curr[1] == "VAL" || curr[1] == "val") {
@@ -261,7 +302,7 @@ fun main(args: Array<String>) {
         } else if (curr[1] == "FOR" || curr[1] == "for") {
             floop(curr, i, "main")
         } else if (curr[1] == "FUN" || curr[1] == "fun") {
-            funs += code[i]
+            funs[i] = code[i]
         } else if (curr[1] == "RETURN" || curr[1] == "return") {
             rtrn(curr, "main")
         } else if (curr[1] == "EXEF" || curr[1] == "exef") {

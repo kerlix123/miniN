@@ -1,9 +1,6 @@
-# LBF
-~ var num = 0
-~ in int num
-
-A print "Input is even."
-B print "Input is odd."
-
-~ IF [num%2==0] A
-~ ELSE B
+# LBAF
+~ fun a[] ...~
+A print "..."
+B print "///"
+C return 0
+~ exef a[]

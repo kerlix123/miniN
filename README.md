@@ -136,6 +136,11 @@ In this example the program outputs numbers from 0 to 5.
 ## Loop functions 
 Inside a loop you can use "BREAK" or "CONTINUE" functions to break or continue a loop.
 
+## ...~
+You can use ...~ operator to say to the function to take and execute all the lines while the name of line is not ~ or till the end of program.
+
+You can use it in EXE, IF, ELIF, ELSE, WHILE, FOR, FUN.
+
 ## Lists
 Lists in miniN are written like this:
 
