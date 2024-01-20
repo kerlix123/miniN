@@ -1,6 +1,0 @@
-# LBAF
-~ fun a[] ...~
-A print "..."
-B print "///"
-C return 0
-~ exef a[]

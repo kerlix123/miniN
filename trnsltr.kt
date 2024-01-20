@@ -1,6 +1,59 @@
 import java.io.File
 import kotlin.system.exitProcess
 
+//checker
+val codeFuns = mutableListOf("LBAF", "LBF", "PRINT", "EXE", "VAR", "VAL", "IN", "INT", "STRING", "CHAR", "DOUBLE", "BOOL", "IF", "ELIF", "ELSE", "WHILE", "FOR", "FUN", "RETURN", "BREAK", "CONTINUE", "EXEF")
+fun iCheck(i: Int, close: List<String>): Int {
+    return if (i == 1) {
+        codeFuns.indexOf(close[0])
+    }
+    else
+        -1
+}
+fun checker(input: List<String>, elIndex: Int): String {
+    var check: Int
+    val checkFun = input[elIndex].uppercase()
+    if (checkFun in codeFuns)
+        return "--True->"
+    val close = mutableListOf<String>()
+    var i = 0
+    for (el in codeFuns) {
+        if (checkFun.length == el.length) {
+            close += el
+            i++
+        }
+    }
+    check = iCheck(i, close)
+    if (check != -1)
+        return codeFuns[check]
+    i = 0
+    var closer = mutableListOf<String>()
+    for (el in close) {
+        if (checkFun.first() == el.first() || checkFun.last() == el.last()) {
+            closer += el
+            i++
+        }
+    }
+    check = iCheck(i, closer)
+    if (check != -1)
+        return codeFuns[check]
+
+    i = 0
+    closer = mutableListOf()
+    for (el in close) {
+        if (checkFun.reversed() == el) {
+            closer += el
+            i++
+        }
+    }
+    check = iCheck(i, closer)
+    return if (check != -1)
+        codeFuns[check]
+    else
+        "Checker error"
+}
+
+//code
 lateinit var miniN: File
 lateinit var kotlin: File
 lateinit var code: List<String>
@@ -11,7 +64,7 @@ var sttstack = mutableListOf<String>()
 
 fun tillTilda(line: Int): List<String> {
     var index = line+1
-    var lines = mutableListOf<String>()
+    val lines = mutableListOf<String>()
     while (index < code.size && code[index].first() != '~') {
         lines += code[index].split(" ").first()
         index++
@@ -54,6 +107,10 @@ fun exe(curr: List<String>, line: Int) {
 
     else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {
         varchange(curr, line, "exe")
+    }
+    else {
+        val checkOut = checker(curr, 1)
+        throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
     }
 }
 fun print(curr: List<String>, line: Int, fn: String) {
@@ -148,7 +205,10 @@ fun input(curr: List<String>, fn: String) {
             "DOUBLE", "double" -> kotlin.appendText(".toDouble()\n")
             "CHAR", "char" -> kotlin.appendText(".toChar()\n")
             "BOOL", "bool" -> kotlin.appendText(".toBoolean()\n")
-            else -> kotlin.appendText("\n")
+            else -> {
+                val checkOut = checker(curr, 2)
+                throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
+            }
         }
     }
 }
@@ -194,7 +254,7 @@ fun floop(curr: List<String>, line: Int, fn: String) {
 }
 fun func() {
     if (funs.isNotEmpty()) {
-        for ((key, value) in funs) {
+        for ((key, _) in funs) {
             kotlin.appendText("fun ${funs[key]?.split(" ")?.filter { it != "" }?.get(2)?.split("[")?.first()}")
             kotlin.appendText("(${funs[key]?.split("[")?.last()?.split("]")?.first()}): Any {\n")
             var lines = code[key].split("]").last().filter { it != ' ' }.split('&')
@@ -273,7 +333,7 @@ fun main(args: Array<String>) {
         if (curr[1] == "PRINT" || curr[1] == "print") {
             print(curr, i, "main")
         } else if (curr[1] == "EXE" || curr[1] == "exe") {
-            var line = i
+            val line = i
             var lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
             if (lines.first() == "...~") {
                 lines = tillTilda(line)
@@ -313,6 +373,10 @@ fun main(args: Array<String>) {
 
         else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {
             varchange(curr, i, "main")
+        }
+        else {
+            val checkOut = checker(curr, 1)
+            throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
         }
         i++
     }
