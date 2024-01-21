@@ -1,0 +1,9 @@
+# LBF
+~ VAR num = 0
+~ IN INT num
+
+A PRINT "Input is even."
+B PRINT "Input is odd."
+
+~ IF [num%2==0] A
+~ ELSE B

@@ -1,8 +1,7 @@
 import java.io.File
-import kotlin.system.exitProcess
 
 //checker
-val codeFuns = mutableListOf("LBAF", "LBF", "PRINT", "EXE", "VAR", "VAL", "IN", "INT", "STRING", "CHAR", "DOUBLE", "BOOL", "IF", "ELIF", "ELSE", "WHILE", "FOR", "FUN", "RETURN", "BREAK", "CONTINUE", "EXEF")
+val codeFuns = mutableListOf("LBAF", "LBF", "PRINT", "EXE", "VAR", "VAL", "IN", "INT", "STRING", "CHAR", "DOUBLE", "BOOL", "IF", "ELIF", "ELSE", "WHILE", "FOR", "FUN", "RETURN", "BREAK", "CONTINUE", "EXEF", "FILE", "+=", "-=", "*=", "/=", "%=", "=")
 fun iCheck(i: Int, close: List<String>): Int {
     return if (i == 1) {
         codeFuns.indexOf(close[0])
@@ -61,6 +60,78 @@ val lineNames = mutableMapOf<String, Int>()
 var i = 0
 var funs = mutableMapOf<Int, String>()
 var sttstack = mutableListOf<String>()
+
+fun currMaker(line: Int): MutableList<String> {
+    if (code[line].isEmpty())
+        return mutableListOf()
+    var curr = mutableListOf<String>()
+    for (it in codeFuns) {
+        if (code[line].contains(it)) {
+            curr = code[line].split(it).toMutableList()
+            curr.add(1, it)
+            break
+        } else if (code[line].uppercase().contains(it)) {
+            curr = code[line].split(it.lowercase()).toMutableList()
+            curr.add(1, it)
+            break
+        }
+    }
+    if (curr.isEmpty() && code.first().isNotEmpty() && code[i].first() != '?') {
+        val p = code[i].split(" ")[1]
+        val checkOut: String = if (p.indexOf('"') > p.indexOf('[')) {
+            checker(p.split('"'), 0)
+        } else {
+            checker(p.split('['), 0)
+        }
+        throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
+    }
+    try {
+        curr[0] = curr[0].filter { it != ' ' }
+        curr[1] = curr[1].filter { it != ' ' }
+    } catch (e: IndexOutOfBoundsException) {
+        run {  }
+    }
+    try {
+        curr[2].split(" ").forEach {
+            val p = it
+            curr += p.filter { p != " " }
+        }
+        curr.removeAt(2)
+        curr = curr.filter { it.isNotBlank() }.toMutableList()
+    } catch (e: IndexOutOfBoundsException) {
+        run {  }
+    }
+    try {
+        if (curr[1] == "=" || curr[1] == "+=" || curr[1] == "-=" || curr[1] == "*=" || curr[1] == "/=" || curr[1] == "%=") {
+            val lineName = code[line].split(" ")[0]
+            val varName = curr[0].split(lineName, limit = 2)
+            curr.removeAt(0)
+            curr.add(0, lineName)
+            curr.add(1, varName[1])
+        } else if (curr[1].uppercase() == "IN") {
+            curr = code[line].split(" ").toMutableList()
+        } else if (curr[1].uppercase() == "VAR" && curr[2].contains("=")) {
+            if (curr[2].contains("[")) {
+                val p = curr[2].split("=")
+                curr[2] = p[0]
+                curr.add(3, p[1])
+                curr.add(3, "=")
+            } else {
+                curr[2].split("=").forEach { curr += it }
+                curr.removeAt(2)
+                curr.add(3, "=")
+            }
+        } else if (curr[1].uppercase() == "FOR" && curr[2].contains(">")) {
+            val p = curr[2].split(">")
+            curr[2] = p[0]
+            curr.add(3, ">")
+            curr.add(4, p[1])
+        }
+    } catch (e: IndexOutOfBoundsException) {
+        run {  }
+    }
+    return curr
+}
 
 fun tillTilda(line: Int): List<String> {
     var index = line+1
@@ -162,7 +233,8 @@ fun ifstt(curr: List<String>, line: Int, fn: String) {
             lines = tillTilda(line)
         }
         for (line2 in lines) {
-            exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+            val currL = currMaker(lineNames[line2]!!)
+            exe(currL, lineNames[line2]!!)
         }
         kotlin.appendText("\t}\n")
         sttstack += "if"
@@ -176,7 +248,8 @@ fun elifstt(curr: List<String>, line: Int) {
             lines = tillTilda(line)
         }
         for (line2 in lines) {
-            exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+            val currL = currMaker(lineNames[line2]!!)
+            exe(currL, lineNames[line2]!!)
         }
         kotlin.appendText("\t}\n")
         sttstack += "elif"
@@ -190,7 +263,8 @@ fun elsestt(curr: List<String>, line: Int) {
             lines = tillTilda(line)
         }
         for (line2 in lines) {
-            exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+            val currL = currMaker(lineNames[line2]!!)
+            exe(currL, lineNames[line2]!!)
         }
         kotlin.appendText("\t}\n")
         sttstack += "else"
@@ -220,7 +294,8 @@ fun wloop(curr: List<String>, line: Int, fn: String) {
             lines = tillTilda(line)
         }
         for (line2 in lines) {
-            exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+            val currL = currMaker(lineNames[line2]!!)
+            exe(currL, lineNames[line2]!!)
         }
         kotlin.appendText("\t}\n")
     }
@@ -246,7 +321,8 @@ fun floop(curr: List<String>, line: Int, fn: String) {
                 lines = tillTilda(line)
             }
             for (line2 in lines) {
-                exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+                val currL = currMaker(lineNames[line2]!!)
+                exe(currL, lineNames[line2]!!)
             }
             kotlin.appendText("\t}\n")
         }
@@ -262,7 +338,8 @@ fun func() {
                 lines = tillTilda(key)
             }
             for (line2 in lines) {
-                exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
+                val currL = currMaker(lineNames[line2]!!)
+                exe(currL, lineNames[line2]!!)
             }
             kotlin.appendText("}\n")
         }
@@ -299,10 +376,13 @@ fun main(args: Array<String>) {
         type = when (code.first().split(" ").filter { it != "" }[1]) {
             "LBF" -> "LBF"
             "LBAF" -> "LBAF"
-            else -> exitProcess(0)
+            else -> {
+                val checkOut = checker(code.first().split(" ").filter { it != "" }, 1)
+                throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
+            }
         }
     } else {
-        exitProcess(0)
+        throw Exception("First line of code should start with defining the style of writing code: \"# LBF\" or \"# LBAF\"")
     }
 
     //LBAF
@@ -321,7 +401,7 @@ fun main(args: Array<String>) {
 
     kotlin.appendText("fun main() {\n")
     while (i < code.size) {
-        val curr = code[i].split(" ").filter { it != "" }
+        val curr = currMaker(i)
 
         //line namer && LBF
         if (curr.isEmpty() || curr[0] == "?" || curr[0] == "#") {
@@ -373,10 +453,6 @@ fun main(args: Array<String>) {
 
         else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {
             varchange(curr, i, "main")
-        }
-        else {
-            val checkOut = checker(curr, 1)
-            throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
         }
         i++
     }
