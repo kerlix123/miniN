@@ -136,10 +136,11 @@ fun currMaker(line: Int): MutableList<String> {
 fun tillTilda(line: Int): List<String> {
     var index = line+1
     val lines = mutableListOf<String>()
-    while (index < code.size && code[index].first() != '~') {
+    while (index < code.size && code[index].isNotEmpty() && code[index].first() != '~') {
         lines += code[index].split(" ").first()
         index++
     }
+    println(lines)
     return lines
 }
 
