@@ -151,7 +151,7 @@ In the example above line B1 is not taken in the FOR function.
     ~ FOR [i > 0..<4] ...
     A1 PRINT "lele"
     B1 PRINT "leel"
-In the example above FOR function will take every line till the line is empty.
+In the example above FOR function will take every line until the empty line.
 
 You can use it in EXE, IF, ELIF, ELSE, WHILE, FOR, FUN.
 
