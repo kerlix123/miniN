@@ -136,8 +136,22 @@ In this example the program outputs numbers from 0 to 5.
 ## Loop functions 
 Inside a loop you can use "BREAK" or "CONTINUE" functions to break or continue a loop.
 
-## ...~
-You can use ...~ operator to say to the function to take and execute all the lines while the name of line is not ~ or till the end of program.
+## ...line_name
+You can use ...line_name operator to say to the function to take and execute all the lines while the name of line is not same as the line_name or till the end of program.
+
+The line at line_name will not be executed.
+
+    # LBAF
+    ~ FOR [i > 0..<4] ...B1
+    A1 PRINT "lele"
+    B1 PRINT "leel"
+In the example above line B1 is not taken in the FOR function.
+
+    # LBAF
+    ~ FOR [i > 0..<4] ...
+    A1 PRINT "lele"
+    B1 PRINT "leel"
+In the example above FOR function will take every line till the line is empty.
 
 You can use it in EXE, IF, ELIF, ELSE, WHILE, FOR, FUN.
 

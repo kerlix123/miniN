@@ -133,10 +133,10 @@ fun currMaker(line: Int): MutableList<String> {
     return curr
 }
 
-fun tillTilda(line: Int): List<String> {
+fun tillLine(line: Int, linestr: String): List<String> {
     var index = line+1
     val lines = mutableListOf<String>()
-    while (index < code.size && code[index].isNotEmpty() && code[index].first() != '~') {
+    while (index < code.size && code[index].isNotEmpty() && code[index].split(" ").first() != linestr.split("...")[1]) {
         lines += code[index].split(" ").first()
         index++
     }
@@ -149,8 +149,8 @@ fun exe(curr: List<String>, line: Int) {
         print(curr, line, "exe")
     } else if (curr[1] == "EXE" || curr[1] == "exe") {
         var lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
-        if (lines.first() == "...~") {
-            lines = tillTilda(line)
+        if (lines.first().contains("...")) {
+            lines = tillLine(line, lines.first())
         }
         for (line2 in lines) {
             exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)
@@ -230,8 +230,8 @@ fun ifstt(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
         kotlin.appendText("\tif (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
         var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
-        if (lines.first() == "...~") {
-            lines = tillTilda(line)
+        if (lines.first().contains("...")) {
+            lines = tillLine(line, lines.first())
         }
         for (line2 in lines) {
             val currL = currMaker(lineNames[line2]!!)
@@ -245,8 +245,8 @@ fun elifstt(curr: List<String>, line: Int) {
     if (curr[0] == "~" && sttstack.last() == "elif" || sttstack.last() == "if") {
         kotlin.appendText("\telse if (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
         var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
-        if (lines.first() == "...~") {
-            lines = tillTilda(line)
+        if (lines.first().contains("...")) {
+            lines = tillLine(line, lines.first())
         }
         for (line2 in lines) {
             val currL = currMaker(lineNames[line2]!!)
@@ -260,8 +260,8 @@ fun elsestt(curr: List<String>, line: Int) {
     if (curr[0] == "~" && sttstack.last() == "elif" || sttstack.last() == "if") {
         kotlin.appendText("\telse {\n")
         var lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
-        if (lines.first() == "...~") {
-            lines = tillTilda(line)
+        if (lines.first().contains("...")) {
+            lines = tillLine(line, lines.first())
         }
         for (line2 in lines) {
             val currL = currMaker(lineNames[line2]!!)
@@ -291,8 +291,8 @@ fun wloop(curr: List<String>, line: Int, fn: String) {
     if (curr[0] == "~" || fn == "exe") {
         kotlin.appendText("\twhile (${code[line].subSequence(code[line].indexOf('[')+1, code[line].lastIndexOf(']'))}) {\n")
         var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
-        if (lines.first() == "...~") {
-            lines = tillTilda(line)
+        if (lines.first().contains("...")) {
+            lines = tillLine(line, lines.first())
         }
         for (line2 in lines) {
             val currL = currMaker(lineNames[line2]!!)
@@ -318,8 +318,8 @@ fun floop(curr: List<String>, line: Int, fn: String) {
             val b = code[line].split("[")[1].split(">")[0].filter { it != ' ' }
             kotlin.appendText("\tfor ($b in $a) {\n")
             var lines = code[line].split("]").last().filter { it != ' ' }.split('&')
-            if (lines.first() == "...~") {
-                lines = tillTilda(line)
+            if (lines.first().contains("...")) {
+                lines = tillLine(line, lines.first())
             }
             for (line2 in lines) {
                 val currL = currMaker(lineNames[line2]!!)
@@ -335,8 +335,8 @@ fun func() {
             kotlin.appendText("fun ${funs[key]?.split(" ")?.filter { it != "" }?.get(2)?.split("[")?.first()}")
             kotlin.appendText("(${funs[key]?.split("[")?.last()?.split("]")?.first()}): Any {\n")
             var lines = code[key].split("]").last().filter { it != ' ' }.split('&')
-            if (lines.first() == "...~") {
-                lines = tillTilda(key)
+            if (lines.first().contains("...")) {
+                lines = tillLine(key, lines.first())
             }
             for (line2 in lines) {
                 val currL = currMaker(lineNames[line2]!!)
@@ -416,8 +416,8 @@ fun main(args: Array<String>) {
         } else if (curr[1] == "EXE" || curr[1] == "exe") {
             val line = i
             var lines = code[line].split(curr[1]).last().filter { it != ' ' }.split('&')
-            if (lines.first() == "...~") {
-                lines = tillTilda(line)
+            if (lines.first().contains("...")) {
+                lines = tillLine(line, lines.first())
             }
             for (line2 in lines) {
                 exe(code[lineNames[line2]!!].split(" ").filter { it != "" }, lineNames[line2]!!)

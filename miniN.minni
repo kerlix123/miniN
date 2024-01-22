@@ -1,14 +1,4 @@
 # LBAF
-~ var a = [4, 2, 3, 1]
-~ var pom = 0
-~ for [i > 0..<4] A1
-A1 for [j > i+1..<4] B1
-B1 if [a[i] > a[j]] ...~
-C1 pom = a[i]
-C2 a[i] = a[j]
-C3 a[j] = pom
-
-
-
-
-~ print "$a"
+~ FOR [i > 0..<4] ...B1
+A1 PRINT "lele"
+B1 PRINT "leel"
