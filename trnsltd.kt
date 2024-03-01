@@ -1,5 +1,2 @@
 fun main() {
-	for (i in 0..<4) {
-	println("lele")
-	}
-}
+	for (i in 0..5) {

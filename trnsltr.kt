@@ -1,7 +1,7 @@
 import java.io.File
 
 //checker
-val codeFuns = mutableListOf("LBAF", "LBF", "PRINT", "EXE", "VAR", "VAL", "IN", "INT", "STRING", "CHAR", "DOUBLE", "BOOL", "IF", "ELIF", "ELSE", "WHILE", "FOR", "FUN", "RETURN", "BREAK", "CONTINUE", "EXEF", "FILE", "+=", "-=", "*=", "/=", "%=", "=")
+val codeFuns = mutableListOf("LBAF", "LBF", "PRINT", "EXE", "VAR", "VAL", "IN", "INT", "STRING", "CHAR", "DOUBLE", "BOOL", "IF", "ELIF", "ELSE", "WHILE", "FOR", "FUN", "RETURN", "BREAK", "CONTINUE", "EXEF", "FILE", "PASS", "+=", "-=", "*=", "/=", "%=", "=")
 fun iCheck(i: Int, close: List<String>): Int {
     return if (i == 1) {
         codeFuns.indexOf(close[0])
@@ -140,7 +140,6 @@ fun tillLine(line: Int, linestr: String): List<String> {
         lines += code[index].split(" ").first()
         index++
     }
-    println(lines)
     return lines
 }
 
@@ -175,6 +174,8 @@ fun exe(curr: List<String>, line: Int) {
         variable(curr, line, "var", "exe")
     } else if (curr[1] == "VAL" || curr[1] == "val") {
         variable(curr, line, "val", "exe")
+    } else if (curr[1] == "PASS" || curr[1] == "pass") {
+        pass()
     }
 
     else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {
@@ -329,6 +330,9 @@ fun floop(curr: List<String>, line: Int, fn: String) {
         }
     }
 }
+fun pass() {
+    kotlin.appendText("\trun { }\n")
+}
 fun func() {
     if (funs.isNotEmpty()) {
         for ((key, _) in funs) {
@@ -365,6 +369,7 @@ fun file (curr: List<String>, line: Int, fn: String) {
     }
 }
 fun main(args: Array<String>) {
+    println(code)
     val type: String
     miniN = File("${args[0]}miniN.minni")
     kotlin = File("${args[0]}trnsltd.kt")
@@ -403,7 +408,6 @@ fun main(args: Array<String>) {
     kotlin.appendText("fun main() {\n")
     while (i < code.size) {
         val curr = currMaker(i)
-
         //line namer && LBF
         if (curr.isEmpty() || curr[0] == "?" || curr[0] == "#") {
             i++
@@ -450,6 +454,8 @@ fun main(args: Array<String>) {
             exef(curr, i, "main")
         } else if (curr[1] == "FILE" || curr[1] == "file") {
             file(curr, i, "main")
+        } else if (curr[1] == "PASS" || curr[1] == "pass") {
+            pass()
         }
 
         else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {
