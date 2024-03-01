@@ -67,6 +67,7 @@ fun currMaker(line: Int): MutableList<String> {
     var curr = mutableListOf<String>()
     for (it in codeFuns) {
         if (code[line].contains(it)) {
+            println(code[line])
             curr = code[line].split(it).toMutableList()
             curr.add(1, it)
             break
@@ -175,7 +176,7 @@ fun exe(curr: List<String>, line: Int) {
     } else if (curr[1] == "VAL" || curr[1] == "val") {
         variable(curr, line, "val", "exe")
     } else if (curr[1] == "PASS" || curr[1] == "pass") {
-        pass()
+        pass("exe")
     }
 
     else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {
@@ -330,8 +331,9 @@ fun floop(curr: List<String>, line: Int, fn: String) {
         }
     }
 }
-fun pass() {
-    kotlin.appendText("\trun { }\n")
+fun pass(fn: String) {
+    if (fn == "main" || fn == "exe")
+        kotlin.appendText("\trun { }\n")
 }
 fun func() {
     if (funs.isNotEmpty()) {
@@ -369,12 +371,10 @@ fun file (curr: List<String>, line: Int, fn: String) {
     }
 }
 fun main(args: Array<String>) {
-    println(code)
     val type: String
     miniN = File("${args[0]}miniN.minni")
     kotlin = File("${args[0]}trnsltd.kt")
     code = miniN.readLines()
-
     kotlin.writeText("")
 
     //LBF || LBAF
@@ -455,7 +455,7 @@ fun main(args: Array<String>) {
         } else if (curr[1] == "FILE" || curr[1] == "file") {
             file(curr, i, "main")
         } else if (curr[1] == "PASS" || curr[1] == "pass") {
-            pass()
+            pass("main")
         }
 
         else if (curr[2] == "=" || curr[2] == "+=" || curr[2] == "-=" || curr[2] == "*=" || curr[2] == "/=" || curr[2] == "%=") {

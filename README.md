@@ -215,6 +215,12 @@ The example above will output:
 ### EXEF function
 
     ~ EXEF fun_name[value_of_parameter_1, value_of_parameter_N]
+
+### PASS function
+
+    ~ PASS
+
+PASS is used to tell the computer to omit that line.
 ## Examples 
 
 ### Hello, World!
