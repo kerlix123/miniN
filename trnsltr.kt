@@ -67,7 +67,6 @@ fun currMaker(line: Int): MutableList<String> {
     var curr = mutableListOf<String>()
     for (it in codeFuns) {
         if (code[line].contains(it)) {
-            println(code[line])
             curr = code[line].split(it).toMutableList()
             curr.add(1, it)
             break
