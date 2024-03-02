@@ -1,0 +1,3 @@
+trnsltd.kt:3:12: warning: variable 'pom' initializer is redundant
+	var pom = 0
+           ^

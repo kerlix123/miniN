@@ -2,54 +2,42 @@ import java.io.File
 
 //checker
 val codeFuns = mutableListOf("LBAF", "LBF", "PRINT", "EXE", "VAR", "VAL", "IN", "INT", "STRING", "CHAR", "DOUBLE", "BOOL", "IF", "ELIF", "ELSE", "WHILE", "FOR", "FUN", "RETURN", "BREAK", "CONTINUE", "EXEF", "FILE", "PASS", "+=", "-=", "*=", "/=", "%=", "=")
-fun iCheck(i: Int, close: List<String>): Int {
-    return if (i == 1) {
-        codeFuns.indexOf(close[0])
-    }
-    else
-        -1
+fun findClosestWord(input: String, wordList: List<String>): String {
+    //GPT
+    return wordList.minByOrNull { calculateLevenshteinDistance(input, it) }.orEmpty()
 }
-fun checker(input: List<String>, elIndex: Int): String {
-    var check: Int
-    val checkFun = input[elIndex].uppercase()
-    if (checkFun in codeFuns)
-        return "--True->"
-    val close = mutableListOf<String>()
-    var i = 0
-    for (el in codeFuns) {
-        if (checkFun.length == el.length) {
-            close += el
-            i++
-        }
-    }
-    check = iCheck(i, close)
-    if (check != -1)
-        return codeFuns[check]
-    i = 0
-    var closer = mutableListOf<String>()
-    for (el in close) {
-        if (checkFun.first() == el.first() || checkFun.last() == el.last()) {
-            closer += el
-            i++
-        }
-    }
-    check = iCheck(i, closer)
-    if (check != -1)
-        return codeFuns[check]
 
-    i = 0
-    closer = mutableListOf()
-    for (el in close) {
-        if (checkFun.reversed() == el) {
-            closer += el
-            i++
+fun calculateLevenshteinDistance(a: String, b: String): Int {
+    //GPT
+    val dp = Array(a.length + 1) { IntArray(b.length + 1) }
+
+    for (i in 0..a.length) {
+        for (j in 0..b.length) {
+            when {
+                i == 0 -> dp[i][j] = j
+                j == 0 -> dp[i][j] = i
+                else -> {
+                    dp[i][j] = minOf(
+                        dp[i - 1][j - 1] + if (a[i - 1] == b[j - 1]) 0 else 1,
+                        dp[i][j - 1] + 1,
+                        dp[i - 1][j] + 1
+                    )
+                }
+            }
         }
     }
-    check = iCheck(i, closer)
-    return if (check != -1)
-        codeFuns[check]
-    else
-        "Checker error"
+
+    return dp[a.length][b.length]
+}
+fun checker(input: String): String {
+    //GPT
+    val closestWord = findClosestWord(input, codeFuns)
+
+    return if (closestWord == input) {
+        "--true->"
+    } else {
+        closestWord
+    }
 }
 
 //code
@@ -79,9 +67,9 @@ fun currMaker(line: Int): MutableList<String> {
     if (curr.isEmpty() && code.first().isNotEmpty() && code[i].first() != '?') {
         val p = code[i].split(" ")[1]
         val checkOut: String = if (p.indexOf('"') > p.indexOf('[')) {
-            checker(p.split('"'), 0)
+            checker(p.split('"')[0])
         } else {
-            checker(p.split('['), 0)
+            checker(p.split('[')[0])
         }
         throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
     }
@@ -182,7 +170,7 @@ fun exe(curr: List<String>, line: Int) {
         varchange(curr, line, "exe")
     }
     else {
-        val checkOut = checker(curr, 1)
+        val checkOut = checker(curr[1])
         throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
     }
 }
@@ -282,7 +270,7 @@ fun input(curr: List<String>, fn: String) {
             "CHAR", "char" -> kotlin.appendText(".toChar()\n")
             "BOOL", "bool" -> kotlin.appendText(".toBoolean()\n")
             else -> {
-                val checkOut = checker(curr, 2)
+                val checkOut = checker(curr[2])
                 throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
             }
         }
@@ -382,7 +370,7 @@ fun main(args: Array<String>) {
             "LBF" -> "LBF"
             "LBAF" -> "LBAF"
             else -> {
-                val checkOut = checker(code.first().split(" ").filter { it != "" }, 1)
+                val checkOut = checker(code.first().split(" ").filter { it != "" }[1])
                 throw Exception("Error on line ${i+1}, did you mean: \"$checkOut\".")
             }
         }
