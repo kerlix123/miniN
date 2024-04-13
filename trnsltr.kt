@@ -60,7 +60,7 @@ fun currMaker(line: Int): MutableList<String> {
             break
         } else if (code[line].uppercase().contains(it)) {
             curr = code[line].split(it.lowercase()).toMutableList()
-            curr.add(1, it)
+            curr.add(1, it.lowercase())
             break
         }
     }
@@ -118,6 +118,7 @@ fun currMaker(line: Int): MutableList<String> {
     } catch (e: IndexOutOfBoundsException) {
         run {  }
     }
+    println(curr)
     return curr
 }
 

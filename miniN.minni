@@ -1,11 +1,4 @@
 # LBAF
-~ VAR a = [4, 2, 3, 1, 1, 2, 5, 3, 5, 7, 89, 45,5, 34, 6, 78, 4,2, 2, 1, 35, 6, 7]
-~ VAR pom = 0
-~ FOR [i > 0..<4] A1
-A1 FOR [j > i+1..<4] B1
-B1 IF [a[i] > a[j]] C1&C2&C3
-C1 pom = a[i]
-C2 a[i] = a[j]
-C3 a[j] = pom
-
-~ PRINT "$a"
+a print "hello, world"
+~ EXE a
+~ PRINT "picka"
